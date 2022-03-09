@@ -12,3 +12,10 @@ web-build/
 
 # macOS
 .DS_Store
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
+**/supabase/.env
+
+.env

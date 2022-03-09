@@ -1,0 +1,10 @@
+Your custom components and wrappers goes here !
+If you like atomic design (https://bradfrost.com/blog/post/atomic-web-design/) you can put here your atoms / molecules / organisms folders.
+
+Components are children of a Screen and they would receive the App state data as props which would be used to construct the UI. 
+
+You must place all the JSX/TSX code of your React components along with their respective react-native imports here.
+
+You would also utilise the react hooks (useEffect, useRef, useState) at the component level which should mostly be avoided in a Screen.
+
+Other possible imports would be types, styles, other components for code re-use, and in general anything else which a Screen does not do.

@@ -1,20 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
+import { ThemeProvider, useTheme, getNavigatorTheme } from 'src/themes';
+import { AuthProvider, useAuth } from 'src/contexts/AuthProvider';
+import { Layout, Spinner } from 'src/components';
+
+import { AppNavigator } from 'src/navigators/AppNavigator';
+import { AuthNavigator } from 'src/navigators/AuthNavigator';
+import './src/translations/i18n';
+/* polyfills */
+/** URL polyfill */
+import 'react-native-url-polyfill/auto';
+
+const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider>
+      <AuthProvider>
+        <Layout>
+          <Root />
+        </Layout>
+      </AuthProvider>
+    </ThemeProvider>
   );
-}
+};
+export default App;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Root: React.FC = () => {
+  const { theme } = useTheme();
+  const { currentUser, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View>
+        <Spinner size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer theme={getNavigatorTheme(theme)}>
+      {currentUser !== null ? <AppNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
+};
