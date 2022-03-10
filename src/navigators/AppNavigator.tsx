@@ -1,17 +1,31 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ProfileScreen } from 'src/screens/ProfileScreen';
-import { ROUTES } from './routes';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+import { ProfileScreen } from 'src/screens/app/ProfileScreen';
 
-const Stack = createNativeStackNavigator();
+export type AppStackParamList = {
+  Home: undefined;
+};
+
+// use this with the hook useNavigation like this:
+// const navigation = useNavigation<AppNavProps<'Home'>>();
+// to have access to the navigation prop
+export type AppNavProps<T extends keyof AppStackParamList> =
+  NativeStackNavigationProp<AppStackParamList, T>;
+
+const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export const AppNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ headerShown: false }}
-        name={ROUTES.HOME}
+        name={'Home'}
         component={ProfileScreen}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );

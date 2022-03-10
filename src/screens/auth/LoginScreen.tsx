@@ -3,8 +3,10 @@ import { Text, Input, Title } from 'src/components';
 import { Button } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from 'src/contexts/AuthProvider';
+import { useTranslation } from 'react-i18next';
 
 export const LoginScreen = () => {
+  const { t } = useTranslation();
   const { loginWithEmailAndPassword, registerWithEmailAndPassword } = useAuth();
   const {
     control,
@@ -25,7 +27,7 @@ export const LoginScreen = () => {
 
   return (
     <>
-      <Title>Welcome</Title>
+      <Title>{t('common:helloWorld')}</Title>
       <Text>Please register or login</Text>
       <Controller
         control={control}
@@ -37,7 +39,7 @@ export const LoginScreen = () => {
         )}
         name="email"
       />
-      {errors.email && <Text>This is required.</Text>}
+      {errors.email && <Text>{t('common:required')}</Text>}
       <Controller
         control={control}
         rules={{
@@ -48,10 +50,14 @@ export const LoginScreen = () => {
         )}
         name="password"
       />
-      {errors.password && <Text>This is required.</Text>}
-      <Button title="Login" color={'red'} onPress={handleSubmit(login)} />
+      {errors.password && <Text>{t('common:required')}</Text>}
       <Button
-        title="Register"
+        title={t('common:login')}
+        color={'red'}
+        onPress={handleSubmit(login)}
+      />
+      <Button
+        title={t('common:register')}
         color={'blue'}
         onPress={handleSubmit(register)}
       />

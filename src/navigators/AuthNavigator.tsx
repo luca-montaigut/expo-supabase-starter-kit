@@ -1,7 +1,19 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import { LoginScreen } from 'src/screens/auth/LoginScreen';
-import { ROUTES } from './routes';
+
+export type AuthStackParamList = {
+  Login: undefined;
+};
+
+// use this with the hook useNavigation like this:
+// const navigation = useNavigation<AuthNavProps<'Login'>>();
+// to have access to the navigation prop
+export type AuthNavProps<T extends keyof AuthStackParamList> =
+  NativeStackNavigationProp<AuthStackParamList, T>;
 
 const Stack = createNativeStackNavigator();
 
@@ -9,7 +21,7 @@ export const AuthNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name={ROUTES.LOGIN}
+        name={'Login'}
         component={LoginScreen}
         options={{
           headerShown: false,

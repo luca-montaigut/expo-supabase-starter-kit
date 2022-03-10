@@ -1,9 +1,9 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 import { Alert } from 'react-native';
-import { ApiError } from '@supabase/supabase-js';
 import { supabase } from 'src/services/supabaseClient';
 import { getUserProfile } from 'src/queries/users';
 import type { UserProfile } from 'src/queries/users';
+import { useSupabaseMutation } from 'src/hooks/use-supabase';
 
 interface AuthContextProps {
   currentUser: UserProfile | null;
@@ -23,7 +23,8 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { execute, error } = useSupabaseMutation();
 
   useEffect(() => {
     (async () => {
@@ -47,7 +48,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const setUserInitialState = async () => {
-    setLoading(true);
     const user = supabase.auth.user();
     if (supabase.auth.session() && user !== null) {
       const profile = await getUserProfile(user.id);
@@ -61,23 +61,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const updateCurrentUser = async (
     fields: Partial<Omit<UserProfile, 'id' | 'email'>>,
   ) => {
-    // @ts-ignore
-    setCurrentUser(prevUser => ({ ...prevUser, ...fields }));
-  };
-
-  const signWrapper = async (
-    func: (args: any) => Promise<{ error: ApiError | null }>,
-    funcArgs: {} | undefined = undefined,
-  ) => {
-    try {
-      const { error } = await func(funcArgs);
-      if (error) throw new Error(`Error ${error.status}: ${error.message}`);
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert('An error occured', error.message);
-      }
-      console.error(error);
-    }
+    setCurrentUser(prevUser => (prevUser ? { ...prevUser, ...fields } : null));
   };
 
   const registerWithEmailAndPassword = async (
@@ -85,24 +69,32 @@ export const AuthProvider: React.FC = ({ children }) => {
     password: string,
   ) => {
     setLoading(true);
-    signWrapper(supabase.auth.signUp.bind(supabase.auth), {
-      email,
-      password,
-    });
+    execute(
+      supabase.auth.signUp({
+        email,
+        password,
+      }),
+    );
   };
 
   const loginWithEmailAndPassword = async (email: string, password: string) => {
     setLoading(true);
-    signWrapper(supabase.auth.signIn.bind(supabase.auth), {
-      email,
-      password,
-    });
+    execute(
+      supabase.auth.signIn({
+        email,
+        password,
+      }),
+    );
   };
 
   const logout = async () => {
     setLoading(true);
-    signWrapper(supabase.auth.signOut.bind(supabase.auth));
+    execute(supabase.auth.signOut());
   };
+
+  if (error) {
+    Alert.alert(error.message);
+  }
 
   return (
     <AuthContext.Provider

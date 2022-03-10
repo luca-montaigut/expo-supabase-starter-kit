@@ -11,7 +11,7 @@ export type UserProfile = {
 export const getUserProfile = async (id: string) => {
   try {
     const { data, error } = await supabase
-      .from('profiles')
+      .from('profile')
       .select('*')
       .eq('id', id);
     if (error) throw new Error(`Error ${error.code}: ${error.message}`);

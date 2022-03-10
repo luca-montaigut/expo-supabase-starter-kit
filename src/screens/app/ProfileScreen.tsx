@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Button } from 'react-native';
 import { Layout, Text, Switch, Input, Title } from 'src/components';
 import { useAuth, useCurrentUser } from 'src/contexts/AuthProvider';
-import { useSupabaseMutation } from 'src/queries/use-supabase';
+import { useSupabaseMutation } from 'src/hooks/use-supabase';
 import { supabase } from 'src/services/supabaseClient';
 
 export const ProfileScreen: React.FC = () => {
@@ -37,7 +37,7 @@ export const ProfileScreen: React.FC = () => {
   }) => {
     await execute(
       supabase
-        .from('profiles')
+        .from('profile')
         .update({ first_name, last_name })
         .eq('id', user.id),
     );
@@ -45,10 +45,16 @@ export const ProfileScreen: React.FC = () => {
     Alert.alert(t('profileUpdated'));
   };
 
+  const username = user.first_name
+    ? user.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user.first_name
+    : user.email;
+
   return (
     <Layout>
       <Title>{t('common:helloWorld')}</Title>
-      <Text>{user.first_name ?? user.email}</Text>
+      <Text>{username}</Text>
       <Switch />
       <Controller
         control={control}
@@ -58,7 +64,7 @@ export const ProfileScreen: React.FC = () => {
         name="first_name"
         defaultValue={user.first_name}
       />
-      {errors.first_name && <Text>This is required.</Text>}
+      {errors.first_name && <Text>{t('common:required')}</Text>}
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
@@ -67,9 +73,9 @@ export const ProfileScreen: React.FC = () => {
         name="last_name"
         defaultValue={user.last_name}
       />
-      {errors.last_name && <Text>This is required.</Text>}
+      {errors.last_name && <Text>{t('common:required')}</Text>}
       <Button
-        title="UPDATE"
+        title={t('common:update')}
         color={'blue'}
         onPress={handleSubmit(updateProfile)}
         disabled={
@@ -78,7 +84,7 @@ export const ProfileScreen: React.FC = () => {
             watchLastName === user.last_name)
         }
       />
-      <Button title="LOGOUT" color={'red'} onPress={logout} />
+      <Button title={t('common:logout')} color={'red'} onPress={logout} />
     </Layout>
   );
 };

@@ -1,5 +1,15 @@
 # Supabase Starter Kit
 
+## Use this starter-kit
+
+Easy, just click on "use this template" and follow the github process 😎
+
+![](https://docs.github.com/assets/cb-36544/images/help/repository/use-this-template-button.png)
+
+Once this is done, `git clone` your newly created repository, go into it with your favorite terminal and run `yarn`
+
+[More informations here](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+
 ## Folder structure :
 
 ```
@@ -18,15 +28,16 @@ src
 │   └── index.ts
 ├── contexts
 │   └── AuthProvider.tsx
+├── hooks
+│   └── use-supabase.tsx
 ├── navigators
 │   ├── AppNavigator.tsx
-│   ├── AuthNavigator.tsx
-│   └── routes.js
+│   └── AuthNavigator.tsx
 ├── queries
-│   ├── use-supabase.tsx
 │   └── users.ts
 ├── screens
-│   ├── ProfileScreen.tsx
+│   ├── app
+│   │   └── ProfileScreen.tsx
 │   ├── auth
 │   │   └── LoginScreen.tsx
 │   └── folder-rules.txt
