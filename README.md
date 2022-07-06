@@ -1,4 +1,4 @@
-# Supabase Starter Kit
+# Expo-Supabase Starter Kit
 
 ## Use this starter-kit
 
